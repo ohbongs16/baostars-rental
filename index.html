@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAOSTARS 장비 렌탈 계산기</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-serif;background:#0d1b2a;min-height:100vh;color:#e0eaf5}
+.header{background:#0a1628;padding:20px 24px;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{color:#4a9eff;font-size:20px;font-weight:600;letter-spacing:3px}
+.sub{color:#8ba4c0;font-size:12px;margin-top:3px}
+.header-right{text-align:right;font-size:12px;color:#8ba4c0}
+.container{display:flex;gap:0;max-width:1100px;margin:0 auto;padding:24px 16px;gap:20px}
+.left-panel{flex:1;min-width:0}
+.right-panel{width:300px;flex-shrink:0}
+.search-bar{display:flex;gap:8px;margin-bottom:14px}
+.search-bar input{flex:1;height:40px;border:1px solid #1e3a5f;border-radius:8px;padding:0 14px;font-size:14px;background:#0a1628;color:#e0eaf5;outline:none}
+.search-bar input:focus{border-color:#4a9eff}
+.search-bar input::placeholder{color:#4a6080}
+.cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cat-btn{padding:5px 12px;border-radius:20px;border:1px solid #1e3a5f;font-size:12px;cursor:pointer;background:transparent;color:#8ba4c0;transition:all .15s}
+.cat-btn.active{background:#1e3a5f;color:#4a9eff;border-color:#4a9eff}
+.cat-btn:hover{border-color:#4a9eff;color:#4a9eff}
+.table-wrap{background:#0a1628;border-radius:10px;border:1px solid #1e3a5f;overflow:hidden}
+.eq-table{width:100%;border-collapse:collapse}
+.eq-table th{padding:10px 12px;font-size:11px;font-weight:500;color:#8ba4c0;text-align:left;background:#071020;border-bottom:1px solid #1e3a5f;position:sticky;top:62px}
+.eq-table th.price-h{text-align:right}
+.eq-table td{padding:9px 12px;font-size:13px;border-bottom:0.5px solid #12253d;color:#c8d8e8;vertical-align:middle}
+.eq-table tr:hover td{background:#0f2035}
+.eq-table tr.checked td{background:#0d2240}
+.cat-row td{padding:6px 12px;font-size:10px;font-weight:600;color:#4a9eff;background:#071020;letter-spacing:1.5px;text-transform:uppercase;border-bottom:0.5px solid #1e3a5f}
+.price-td{text-align:right;font-weight:500;color:#4a9eff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ref-td{font-size:11px;color:#4a6080;white-space:nowrap}
+.check-td{width:36px;text-align:center}
+.check-td input{width:17px;height:17px;accent-color:#4a9eff;cursor:pointer}
+.qty-input{width:44px;height:28px;border:1px solid #1e3a5f;border-radius:5px;text-align:center;font-size:13px;background:#071020;color:#c8d8e8;outline:none}
+.qty-input:focus{border-color:#4a9eff}
+.model-name{font-weight:500;color:#e0eaf5;font-size:13px}
+.model-desc{font-size:11px;color:#4a7090;margin-top:2px}
+.no-result{padding:40px;text-align:center;color:#4a6080;font-size:13px}
+.summary-card{background:#0a1628;border:1px solid #1e3a5f;border-radius:10px;overflow:hidden;position:sticky;top:90px}
+.summary-header{background:#071020;padding:14px 16px;border-bottom:1px solid #1e3a5f}
+.summary-title{color:#4a9eff;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+.summary-items{padding:12px 16px;min-height:120px;max-height:320px;overflow-y:auto}
+.summary-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#8ba4c0;padding:4px 0;border-bottom:0.5px solid #12253d}
+.summary-item:last-child{border-bottom:none}
+.summary-item-name{flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summary-item-price{color:#4a9eff;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.summary-empty{color:#2a4060;font-size:12px;font-style:italic;text-align:center;padding:20px 0}
+.summary-footer{padding:14px 16px;border-top:1px solid #1e3a5f;background:#071020}
+.total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.total-label{font-size:12px;color:#8ba4c0}
+.total-price{font-size:24px;font-weight:600;color:#4a9eff;font-variant-numeric:tabular-nums}
+.vat-row{font-size:11px;color:#4a6080;text-align:right;margin-bottom:12px}
+.clear-btn{width:100%;padding:9px;background:transparent;border:1px solid #1e3a5f;color:#8ba4c0;border-radius:7px;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit}
+.clear-btn:hover{border-color:#4a9eff;color:#4a9eff}
+.days-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:#8ba4c0}
+.days-row input{width:44px;height:28px;border:1px solid #1e3a5f;border-radius:5px;text-align:center;font-size:13px;background:#0a1628;color:#4a9eff;font-weight:600;outline:none;font-family:inherit}
+.days-row input:focus{border-color:#4a9eff}
+.count-badge{display:inline-block;background:#1e3a5f;color:#4a9eff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px}
+.footer-note{text-align:center;padding:16px;font-size:11px;color:#2a4060}
+@media(max-width:700px){
+  .container{flex-direction:column}
+  .right-panel{width:100%}
+  .summary-card{position:static}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">BAOSTARS</div>
+    <div class="sub">촬영 장비 렌탈 단가 계산기</div>
+  </div>
+  <div class="header-right">
+    바로렌트 · 테이크투렌탈 · 한렌탈 기준<br>시장 평균가 (VAT 별도)
+  </div>
+</div>
+
+<div class="container">
+  <div class="left-panel">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="장비명 검색... (예: FX6, 짐벌, 드론, 조명)" oninput="filterEquipment()">
+    </div>
+    <div class="cat-filter" id="catFilter"></div>
+    <div class="table-wrap">
+      <table class="eq-table">
+        <thead>
+          <tr>
+            <th class="check-td">선택</th>
+            <th>모델명 / 용도</th>
+            <th style="width:52px">수량</th>
+            <th class="price-h" style="width:110px">단가(1일)</th>
+            <th style="width:70px">참고</th>
+          </tr>
+        </thead>
+        <tbody id="eqBody"></tbody>
+      </table>
+      <div id="noResult" class="no-result" style="display:none">검색 결과가 없습니다.</div>
+    </div>
+    <div class="footer-note">※ 본 단가는 시장 참고가이며 실제 협의에 따라 조정될 수 있습니다. | © BAOSTARS · baostars@naver.com</div>
+  </div>
+
+  <div class="right-panel">
+    <div class="summary-card">
+      <div class="summary-header">
+        <div class="summary-title">선택 장비 목록 <span class="count-badge" id="countBadge">0</span></div>
+      </div>
+      <div class="summary-items" id="summaryItems">
+        <div class="summary-empty">장비를 선택하면<br>여기에 표시됩니다.</div>
+      </div>
+      <div class="summary-footer">
+        <div class="days-row">
+          <span>대여 일수</span>
+          <input type="number" id="daysInput" min="1" max="30" value="1" onchange="updateSummary()">
+          <span>일</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">합계 (VAT 별도)</span>
+          <span class="total-price" id="summaryTotal">₩0</span>
+        </div>
+        <div class="vat-row" id="summaryVat">VAT 10% 포함: ₩0</div>
+        <button class="clear-btn" onclick="clearAll()">전체 선택 해제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const data=[
+  {cat:'Audio',model:'Accsoon Como C1',desc:'인터컴 (5ea)',price:30000,ref:'시장가'},
+  {cat:'Audio',model:'Sony UWP D11',desc:'인터뷰 마이크',price:20000,ref:'바로렌트'},
+  {cat:'Audio',model:'DJI Mic 1',desc:'인터뷰 마이크 및 녹음',price:20000,ref:'시장가'},
+  {cat:'Audio',model:'DJI Mic 2',desc:'인터뷰 마이크 및 녹음',price:25000,ref:'시장가'},
+  {cat:'Audio',model:'Zoom H4n Pro',desc:'사운드 녹음기',price:25000,ref:'바로렌트'},
+  {cat:'Camera',model:'Sony FX6',desc:'메인 시네마 카메라',price:100000,ref:'바로렌트'},
+  {cat:'Camera',model:'Sony FX3',desc:'서브 시네마 카메라',price:70000,ref:'바로렌트'},
+  {cat:'Camera',model:'Sony ZV-E1',desc:'컴팩트 풀프레임',price:50000,ref:'시장가'},
+  {cat:'Camera',model:'Sony A1',desc:'플래그십, 저조도, 고화소',price:120000,ref:'시장가'},
+  {cat:'Camera',model:'Sony A7S III',desc:'저조도 플래그십',price:70000,ref:'바로렌트'},
+  {cat:'Camera',model:'Sony A7R V',desc:'고화소',price:60000,ref:'바로렌트'},
+  {cat:'Camera',model:'Sony A7M V',desc:'표준 라인업',price:55000,ref:'바로렌트'},
+  {cat:'Action/360',model:'DJI Osmo Action 6',desc:'특수 / 익스트림 앵글',price:25000,ref:'시장가'},
+  {cat:'Action/360',model:'DJI Osmo Action 4',desc:'특수 / 익스트림 앵글',price:20000,ref:'시장가'},
+  {cat:'Action/360',model:'Insta360 X3',desc:'360도 특수 촬영',price:30000,ref:'시장가'},
+  {cat:'Drone',model:'DJI AVATA 2',desc:'FPV 항공 촬영',price:80000,ref:'시장가'},
+  {cat:'Drone',model:'DJI Mavic Air 3',desc:'고화질 항공 촬영',price:85000,ref:'바로렌트'},
+  {cat:'Drone',model:'DJI Mini 5 Pro',desc:'중량 제한 구역',price:60000,ref:'시장가'},
+  {cat:'Lens',model:'Samyang V-AF Lens Set',desc:'시네마 단렌즈 라인',price:150000,ref:'시장가'},
+  {cat:'Lens',model:'Sony 50mm f1.2 GM',desc:'단렌즈',price:35000,ref:'바로렌트'},
+  {cat:'Lens',model:'Sony 85mm f1.4 GM',desc:'단렌즈 / 포트레이트',price:35000,ref:'바로렌트'},
+  {cat:'Lens',model:'Sony 90mm Macro f2.8',desc:'단렌즈 / 제품 촬영',price:30000,ref:'바로렌트'},
+  {cat:'Lens',model:'삼양 35-150mm f2-2.8',desc:'현장 주력 올인원',price:50000,ref:'시장가'},
+  {cat:'Lens',model:'Sony 24-70mm GM',desc:'표준 GM 줌',price:40000,ref:'바로렌트'},
+  {cat:'Lens',model:'Sony 12-24mm GM',desc:'초광각',price:50000,ref:'바로렌트'},
+  {cat:'Lens',model:'Sony 100-400mm',desc:'망원',price:40000,ref:'바로렌트'},
+  {cat:'Lens',model:'Sony 200-600mm GM',desc:'초망원 줌',price:60000,ref:'바로렌트'},
+  {cat:'Lens',model:'탐론 70-180mm F2.8',desc:'망원 (Sony FE)',price:35000,ref:'시장가'},
+  {cat:'Lighting',model:'Aputure Storm 700x',desc:'고출력 바이컬러',price:60000,ref:'테이크투'},
+  {cat:'Lighting',model:'Nanlite Forza 500D',desc:'고출력 데이라이트',price:50000,ref:'바로렌트'},
+  {cat:'Lighting',model:'Nanlite FS-300C',desc:'고출력 컬러 조명',price:50000,ref:'시장가'},
+  {cat:'Lighting',model:'Nanlite FC-120C',desc:'고출력 컬러 조명',price:35000,ref:'시장가'},
+  {cat:'Lighting',model:'Zhiyun MOLUS X100',desc:'고출력 바이컬러',price:35000,ref:'시장가'},
+  {cat:'Lighting',model:'Nanlite Forza 60D',desc:'고출력 데이라이트',price:25000,ref:'바로렌트'},
+  {cat:'Lighting',model:'GVM 800D-RGB 3-Kit',desc:'패널 라인업',price:50000,ref:'시장가'},
+  {cat:'Lighting',model:'Nanlite PavoTube 30C',desc:'튜브 RGB',price:30000,ref:'바로렌트'},
+  {cat:'Lighting',model:'ANCESS TK BI FLEX 90W',desc:'플렉시블 LED CRI96',price:25000,ref:'시장가'},
+  {cat:'Lighting',model:'Aputure MC 4-Light Kit',desc:'휴대용 RGBWW',price:20000,ref:'시장가'},
+  {cat:'Lighting',model:'Amaran AL-528W',desc:'휴대용 면광원',price:15000,ref:'시장가'},
+  {cat:'Lighting',model:'Aputure Light Dome II',desc:'조명 확산 디퓨져',price:10000,ref:'시장가'},
+  {cat:'Monitor/Wireless',model:'Atomos Sumo 19',desc:'디렉터용 / 기록용 모니터',price:50000,ref:'시장가'},
+  {cat:'Monitor/Wireless',model:'Atomos Shogun Inferno',desc:'4K 레코더/모니터',price:40000,ref:'바로렌트'},
+  {cat:'Monitor/Wireless',model:'Hollyland Mars 400S Pro',desc:'무선 송수신 시스템',price:25000,ref:'바로렌트'},
+  {cat:'Monitor/Wireless',model:'Hollyland Mars 400S',desc:'무선 송수신 시스템',price:20000,ref:'시장가'},
+  {cat:'Monitor/Wireless',model:'Hollyland M1',desc:'무선 모니터 시스템',price:25000,ref:'시장가'},
+  {cat:'Monitor/Wireless',model:'DJI SDR 송수신기',desc:'무선 SDR 송수신',price:40000,ref:'시장가'},
+  {cat:'Support',model:'DJI RS3 Pro',desc:'스태빌라이저',price:55000,ref:'바로렌트'},
+  {cat:'Support',model:'DJI RS2 Pro',desc:'스태빌라이저',price:45000,ref:'바로렌트'},
+  {cat:'Support',model:'Zeapon Micro 3 (전동)',desc:'전동 무빙 슬라이더',price:40000,ref:'바로렌트'},
+  {cat:'Support',model:'Syrp Magic Carpet',desc:'100cm 수동 슬라이더',price:25000,ref:'시장가'},
+  {cat:'Support',model:'Sachtler Flowtech 75mm',desc:'메인 카본 삼각대',price:50000,ref:'바로렌트'},
+  {cat:'Support',model:'유압식 삼각대',desc:'중계용 보조 삼각대',price:20000,ref:'바로렌트'},
+  {cat:'Support',model:'C-Stand',desc:'조명 및 리깅용',price:8000,ref:'시장가'},
+  {cat:'Support',model:'A-Stand',desc:'조명 및 리깅용',price:5000,ref:'시장가'},
+];
+
+const catLabels={
+  'Audio':'Audio · 오디오',
+  'Camera':'Camera · 시네마/사진',
+  'Action/360':'Camera · 액션/360',
+  'Drone':'Drone · 드론',
+  'Lens':'Lens · 렌즈',
+  'Lighting':'Lighting · 조명',
+  'Monitor/Wireless':'Monitor & Wireless · 모니터/무선',
+  'Support':'Support · 그립/삼각대'
+};
+
+const cats=['전체',...Object.keys(catLabels)];
+let activeCat='전체';
+let searchText='';
+let selected={};
+let customQty={};
+
+function initCatFilter(){
+  const cf=document.getElementById('catFilter');
+  cats.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='cat-btn'+(c==='전체'?' active':'');
+    b.textContent=c==='전체'?'전체 보기':catLabels[c]||c;
+    b.onclick=()=>{
+      activeCat=c;
+      document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      renderTable();
+    };
+    cf.appendChild(b);
+  });
+}
+
+function fmt(n){return'₩'+n.toLocaleString('ko-KR')}
+
+function renderTable(){
+  const body=document.getElementById('eqBody');
+  const noRes=document.getElementById('noResult');
+  body.innerHTML='';
+  const q=searchText.toLowerCase();
+  let prevCat='';
+  let count=0;
+  data.forEach((item,i)=>{
+    if(activeCat!=='전체'&&item.cat!==activeCat)return;
+    if(q&&!item.model.toLowerCase().includes(q)&&!item.desc.toLowerCase().includes(q))return;
+    count++;
+    if(item.cat!==prevCat){
+      const cr=document.createElement('tr');
+      cr.classList.add('cat-row');
+      cr.innerHTML=`<td colspan="5">${catLabels[item.cat]||item.cat}</td>`;
+      body.appendChild(cr);
+      prevCat=item.cat;
+    }
+    const isChecked=!!selected[i];
+    const tr=document.createElement('tr');
+    if(isChecked)tr.classList.add('checked');
+    tr.innerHTML=`
+      <td class="check-td"><input type="checkbox" ${isChecked?'checked':''} onchange="toggle(${i},this)"></td>
+      <td><div class="model-name">${item.model}</div><div class="model-desc">${item.desc}</div></td>
+      <td><input class="qty-input" type="number" min="1" max="99" value="${customQty[i]||1}" onchange="setQty(${i},this)"></td>
+      <td class="price-td">${fmt(item.price)}</td>
+      <td class="ref-td">${item.ref}</td>
+    `;
+    body.appendChild(tr);
+  });
+  noRes.style.display=count===0?'block':'none';
+  updateSummary();
+}
+
+function toggle(i,el){
+  if(el.checked){selected[i]=true;if(!customQty[i])customQty[i]=1;}
+  else{delete selected[i];}
+  renderTable();
+}
+
+function setQty(i,el){
+  const v=Math.max(1,parseInt(el.value)||1);
+  el.value=v;
+  customQty[i]=v;
+  selected[i]=true;
+  updateSummary();
+}
+
+function updateSummary(){
+  const si=document.getElementById('summaryItems');
+  const st=document.getElementById('summaryTotal');
+  const sv=document.getElementById('summaryVat');
+  const cb=document.getElementById('countBadge');
+  const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  const keys=Object.keys(selected).map(Number).filter(k=>selected[k]);
+  cb.textContent=keys.length;
+  if(keys.length===0){
+    si.innerHTML='<div class="summary-empty">장비를 선택하면<br>여기에 표시됩니다.</div>';
+    st.textContent='₩0';
+    sv.textContent='VAT 10% 포함: ₩0';
+    return;
+  }
+  let total=0;
+  si.innerHTML='';
+  keys.forEach(k=>{
+    const item=data[k];
+    const q=customQty[k]||1;
+    const sub=item.price*q*days;
+    total+=sub;
+    const div=document.createElement('div');
+    div.className='summary-item';
+    div.innerHTML=`<span class="summary-item-name">${item.model}${q>1?' ×'+q:''}</span><span class="summary-item-price">${fmt(sub)}</span>`;
+    si.appendChild(div);
+  });
+  st.textContent=fmt(total);
+  sv.textContent=`VAT 10% 포함: ${fmt(Math.round(total*1.1))}`;
+}
+
+function filterEquipment(){
+  searchText=document.getElementById('searchInput').value;
+  renderTable();
+}
+
+function clearAll(){
+  selected={};
+  customQty={};
+  renderTable();
+}
+
+initCatFilter();
+renderTable();
+</script>
+</body>
+</html>
