@@ -148,8 +148,18 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
       <input type="text" id="projectName" placeholder="예) 2026 브랜드 홍보영상 촬영">
     </div>
     <div class="modal-field">
-      <label>촬영 예정일</label>
-      <input type="text" id="shootDate" placeholder="예) 2026.05.06">
+      <label>대여 날짜 · 시간</label>
+      <div style="display:flex;gap:6px">
+        <input type="date" id="rentDate" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="time" id="rentTime" value="09:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>반납 날짜 · 시간</label>
+      <div style="display:flex;gap:6px">
+        <input type="date" id="returnDate" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="time" id="returnTime" value="18:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+      </div>
     </div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeModal()">취소</button>
@@ -406,7 +416,13 @@ function doPrint(){
   const client=document.getElementById('clientName').value||'';
   const manager=document.getElementById('clientManager').value||'';
   const project=document.getElementById('projectName').value||'장비 렌탈 견적';
-  const date=document.getElementById('shootDate').value||'';
+  const rentDate=document.getElementById('rentDate').value||'';
+  const rentTime=document.getElementById('rentTime').value||'';
+  const returnDate=document.getElementById('returnDate').value||'';
+  const returnTime=document.getElementById('returnTime').value||'';
+  function fmtDate(d,t){if(!d)return '';const [y,m,day]=d.split('-');return `${y}.${m}.${day}${t?' '+t:''}`;}
+  const rentStr=fmtDate(rentDate,rentTime);
+  const returnStr=fmtDate(returnDate,returnTime);
   const today=new Date();
   const todayStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
   const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
@@ -420,7 +436,7 @@ function doPrint(){
   }).join('');
 
   const clientLine=`${client}${manager?' · '+manager:''}`;
-  const dateLine=date?`촬영 예정일: ${date}`:'';
+  const dateLine=rentStr?`대여: ${rentStr} → 반납: ${returnStr||'미정'}`:''; const date=rentStr;
   const vat=Math.round(total*1.1);
 
   const html=`
@@ -450,7 +466,8 @@ function doPrint(){
   <hr class="divider">
   <div class="meta">
     ${clientLine?`<div class="meta-row"><span class="meta-label">수신</span><span class="meta-val">${clientLine}</span></div>`:''}
-    ${dateLine?`<div class="meta-row"><span class="meta-label">촬영 예정일</span><span class="meta-val">${date}</span></div>`:''}
+    ${rentStr?`<div class="meta-row"><span class="meta-label">대여 일시</span><span class="meta-val">${rentStr}</span></div>`:''}
+    ${returnStr?`<div class="meta-row"><span class="meta-label">반납 일시</span><span class="meta-val">${returnStr}</span></div>`:''}
     <div class="meta-row"><span class="meta-label">견적일</span><span class="meta-val">${todayStr}</span></div>
     <div class="meta-row"><span class="meta-label">대여 일수</span><span class="meta-val">${days}일</span></div>
     <div class="meta-row"><span class="meta-label">유효기간</span><span class="meta-val">견적일로부터 30일</span></div>
