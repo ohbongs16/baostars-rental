@@ -11,7 +11,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
 .logo{color:#4a9eff;font-size:20px;font-weight:600;letter-spacing:3px}
 .sub{color:#8ba4c0;font-size:12px;margin-top:3px}
 .header-right{text-align:right;font-size:12px;color:#8ba4c0}
-.container{display:flex;gap:0;max-width:1100px;margin:0 auto;padding:24px 16px;gap:20px}
+.container{display:flex;max-width:1100px;margin:0 auto;padding:24px 16px;gap:20px}
 .left-panel{flex:1;min-width:0}
 .right-panel{width:300px;flex-shrink:0}
 .search-bar{display:flex;gap:8px;margin-bottom:14px}
@@ -24,7 +24,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
 .cat-btn:hover{border-color:#4a9eff;color:#4a9eff}
 .table-wrap{background:#0a1628;border-radius:10px;border:1px solid #1e3a5f;overflow:hidden}
 .eq-table{width:100%;border-collapse:collapse}
-.eq-table th{padding:10px 12px;font-size:11px;font-weight:500;color:#8ba4c0;text-align:left;background:#071020;border-bottom:1px solid #1e3a5f;position:sticky;top:62px}
+.eq-table th{padding:10px 12px;font-size:11px;font-weight:500;color:#8ba4c0;text-align:left;background:#071020;border-bottom:1px solid #1e3a5f}
 .eq-table th.price-h{text-align:right}
 .eq-table td{padding:9px 12px;font-size:13px;border-bottom:0.5px solid #12253d;color:#c8d8e8;vertical-align:middle}
 .eq-table tr:hover td{background:#0f2035}
@@ -42,24 +42,76 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
 .summary-card{background:#0a1628;border:1px solid #1e3a5f;border-radius:10px;overflow:hidden;position:sticky;top:90px}
 .summary-header{background:#071020;padding:14px 16px;border-bottom:1px solid #1e3a5f}
 .summary-title{color:#4a9eff;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
-.summary-items{padding:12px 16px;min-height:120px;max-height:320px;overflow-y:auto}
-.summary-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#8ba4c0;padding:4px 0;border-bottom:0.5px solid #12253d}
+.summary-items{padding:12px 16px;min-height:120px;max-height:280px;overflow-y:auto}
+.summary-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#8ba4c0;padding:5px 0;border-bottom:0.5px solid #12253d}
 .summary-item:last-child{border-bottom:none}
 .summary-item-name{flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.summary-item-price{color:#4a9eff;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.summary-item-price{color:#4a9eff;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums;margin-right:8px}
+.summary-item-del{background:transparent;border:none;color:#2a4060;cursor:pointer;font-size:15px;line-height:1;padding:0 2px;flex-shrink:0;transition:color .15s}
+.summary-item-del:hover{color:#e24b4a}
 .summary-empty{color:#2a4060;font-size:12px;font-style:italic;text-align:center;padding:20px 0}
 .summary-footer{padding:14px 16px;border-top:1px solid #1e3a5f;background:#071020}
 .total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .total-label{font-size:12px;color:#8ba4c0}
 .total-price{font-size:24px;font-weight:600;color:#4a9eff;font-variant-numeric:tabular-nums}
 .vat-row{font-size:11px;color:#4a6080;text-align:right;margin-bottom:12px}
-.clear-btn{width:100%;padding:9px;background:transparent;border:1px solid #1e3a5f;color:#8ba4c0;border-radius:7px;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit}
-.clear-btn:hover{border-color:#4a9eff;color:#4a9eff}
 .days-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:#8ba4c0}
 .days-row input{width:44px;height:28px;border:1px solid #1e3a5f;border-radius:5px;text-align:center;font-size:13px;background:#0a1628;color:#4a9eff;font-weight:600;outline:none;font-family:inherit}
 .days-row input:focus{border-color:#4a9eff}
 .count-badge{display:inline-block;background:#1e3a5f;color:#4a9eff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px}
+.btn-group{display:flex;flex-direction:column;gap:8px}
+.clear-btn{width:100%;padding:9px;background:transparent;border:1px solid #1e3a5f;color:#8ba4c0;border-radius:7px;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit}
+.clear-btn:hover{border-color:#4a9eff;color:#4a9eff}
+.pdf-btn{width:100%;padding:10px;background:#185fa5;border:none;color:#fff;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:0.5px}
+.pdf-btn:hover{background:#1e7ac8}
+.pdf-btn:disabled{background:#1e3a5f;color:#4a6080;cursor:not-allowed}
 .footer-note{text-align:center;padding:16px;font-size:11px;color:#2a4060}
+
+/* 견적서 입력 모달 */
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:#0a1628;border:1px solid #1e3a5f;border-radius:12px;padding:28px;width:380px;max-width:90vw}
+.modal h3{color:#4a9eff;font-size:15px;font-weight:600;margin-bottom:20px;letter-spacing:1px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:12px;color:#8ba4c0;margin-bottom:5px}
+.modal-field input{width:100%;height:38px;border:1px solid #1e3a5f;border-radius:7px;padding:0 12px;font-size:13px;background:#071020;color:#e0eaf5;outline:none;font-family:inherit}
+.modal-field input:focus{border-color:#4a9eff}
+.modal-field input::placeholder{color:#4a6080}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-cancel{flex:1;padding:10px;background:transparent;border:1px solid #1e3a5f;color:#8ba4c0;border-radius:7px;font-size:13px;cursor:pointer;font-family:inherit}
+.modal-cancel:hover{border-color:#4a9eff;color:#4a9eff}
+.modal-confirm{flex:2;padding:10px;background:#185fa5;border:none;color:#fff;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.modal-confirm:hover{background:#1e7ac8}
+
+/* PDF 인쇄 스타일 */
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .header,.left-panel,.modal-bg{display:none!important}
+  .container{padding:0!important;display:block!important}
+  .right-panel{width:100%!important;position:static!important}
+  .summary-card{border:none!important;background:#fff!important;position:static!important}
+  .summary-header{background:#fff!important;border-bottom:2px solid #0a1628!important}
+  .summary-title{color:#0a1628!important;font-size:13px!important}
+  .summary-items{max-height:none!important}
+  .summary-item{color:#333!important;border-bottom:0.5px solid #ddd!important}
+  .summary-item-price{color:#185fa5!important}
+  .summary-footer{background:#fff!important;border-top:1px solid #ddd!important}
+  .total-label{color:#666!important}
+  .total-price{color:#185fa5!important}
+  .vat-row{color:#888!important}
+  .btn-group{display:none!important}
+  .days-row{color:#666!important}
+  #printHeader{display:block!important}
+  #printFooter{display:block!important}
+}
+
+#printHeader{display:none;margin-bottom:24px;border-bottom:2px solid #0a1628;padding-bottom:16px}
+#printHeader .ph-logo{font-size:24px;font-weight:700;color:#0a1628;letter-spacing:3px}
+#printHeader .ph-info{font-size:12px;color:#666;margin-top:4px;line-height:1.8}
+#printHeader .ph-client{margin-top:12px;font-size:13px;color:#333}
+#printHeader .ph-title{font-size:16px;font-weight:600;color:#0a1628;margin-top:8px}
+#printFooter{display:none;margin-top:20px;font-size:11px;color:#888;text-align:center;border-top:1px solid #ddd;padding-top:12px}
+
 @media(max-width:700px){
   .container{flex-direction:column}
   .right-panel{width:100%}
@@ -79,6 +131,33 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
   </div>
 </div>
 
+<!-- 견적서 정보 입력 모달 -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3>📋 견적서 정보 입력</h3>
+    <div class="modal-field">
+      <label>고객사명</label>
+      <input type="text" id="clientName" placeholder="예) ㈜ABC 마케팅">
+    </div>
+    <div class="modal-field">
+      <label>담당자명</label>
+      <input type="text" id="clientManager" placeholder="예) 김철수 대리">
+    </div>
+    <div class="modal-field">
+      <label>프로젝트명</label>
+      <input type="text" id="projectName" placeholder="예) 2026 브랜드 홍보영상 촬영">
+    </div>
+    <div class="modal-field">
+      <label>촬영 예정일</label>
+      <input type="text" id="shootDate" placeholder="예) 2026.05.06">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">취소</button>
+      <button class="modal-confirm" onclick="doPrint()">견적서 출력</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="left-panel">
     <div class="search-bar">
@@ -93,7 +172,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
             <th>모델명 / 용도</th>
             <th style="width:52px">수량</th>
             <th class="price-h" style="width:110px">단가(1일)</th>
-            <th style="width:70px">참고</th>
+
           </tr>
         </thead>
         <tbody id="eqBody"></tbody>
@@ -104,6 +183,18 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
   </div>
 
   <div class="right-panel">
+    <!-- 인쇄 시 나타나는 견적서 헤더 -->
+    <div id="printHeader">
+      <div class="ph-logo">BAOSTARS</div>
+      <div class="ph-info">
+        부산광역시 사하구 하신번영로 312번길 63, 801호<br>
+        baostars@naver.com · 010-2871-1397<br>
+        사업자등록번호: 760-01-01001
+      </div>
+      <div class="ph-client" id="phClient"></div>
+      <div class="ph-title" id="phTitle"></div>
+    </div>
+
     <div class="summary-card">
       <div class="summary-header">
         <div class="summary-title">선택 장비 목록 <span class="count-badge" id="countBadge">0</span></div>
@@ -122,8 +213,17 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
           <span class="total-price" id="summaryTotal">₩0</span>
         </div>
         <div class="vat-row" id="summaryVat">VAT 10% 포함: ₩0</div>
-        <button class="clear-btn" onclick="clearAll()">전체 선택 해제</button>
+        <div class="btn-group">
+          <button class="pdf-btn" id="pdfBtn" onclick="openModal()" disabled>📄 견적서 PDF 다운로드</button>
+          <button class="clear-btn" onclick="clearAll()">전체 선택 해제</button>
+        </div>
       </div>
+    </div>
+
+    <!-- 인쇄 시 나타나는 견적서 푸터 -->
+    <div id="printFooter">
+      ※ 본 견적은 시장 참고가 기준이며 실제 협의에 따라 조정됩니다.<br>
+      유효기간: 견적일로부터 30일 · © BAOSTARS 이영봉 대표
     </div>
   </div>
 </div>
@@ -247,7 +347,7 @@ function renderTable(){
       <td><div class="model-name">${item.model}</div><div class="model-desc">${item.desc}</div></td>
       <td><input class="qty-input" type="number" min="1" max="99" value="${customQty[i]||1}" onchange="setQty(${i},this)"></td>
       <td class="price-td">${fmt(item.price)}</td>
-      <td class="ref-td">${item.ref}</td>
+
     `;
     body.appendChild(tr);
   });
@@ -263,9 +363,7 @@ function toggle(i,el){
 
 function setQty(i,el){
   const v=Math.max(1,parseInt(el.value)||1);
-  el.value=v;
-  customQty[i]=v;
-  selected[i]=true;
+  el.value=v;customQty[i]=v;selected[i]=true;
   updateSummary();
 }
 
@@ -274,41 +372,120 @@ function updateSummary(){
   const st=document.getElementById('summaryTotal');
   const sv=document.getElementById('summaryVat');
   const cb=document.getElementById('countBadge');
+  const pb=document.getElementById('pdfBtn');
   const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
   const keys=Object.keys(selected).map(Number).filter(k=>selected[k]);
   cb.textContent=keys.length;
+  pb.disabled=keys.length===0;
   if(keys.length===0){
     si.innerHTML='<div class="summary-empty">장비를 선택하면<br>여기에 표시됩니다.</div>';
-    st.textContent='₩0';
-    sv.textContent='VAT 10% 포함: ₩0';
-    return;
+    st.textContent='₩0';sv.textContent='VAT 10% 포함: ₩0';return;
   }
-  let total=0;
-  si.innerHTML='';
+  let total=0;si.innerHTML='';
   keys.forEach(k=>{
-    const item=data[k];
-    const q=customQty[k]||1;
-    const sub=item.price*q*days;
-    total+=sub;
-    const div=document.createElement('div');
-    div.className='summary-item';
-    div.innerHTML=`<span class="summary-item-name">${item.model}${q>1?' ×'+q:''}</span><span class="summary-item-price">${fmt(sub)}</span>`;
+    const item=data[k];const q=customQty[k]||1;const sub=item.price*q*days;total+=sub;
+    const div=document.createElement('div');div.className='summary-item';
+    div.innerHTML=`<span class="summary-item-name">${item.model}${q>1?' ×'+q:''}</span><span class="summary-item-price">${fmt(sub)}</span><button class="summary-item-del" onclick="deselect(${k})" title="선택 해제">✕</button>`;
     si.appendChild(div);
   });
   st.textContent=fmt(total);
   sv.textContent=`VAT 10% 포함: ${fmt(Math.round(total*1.1))}`;
 }
 
-function filterEquipment(){
-  searchText=document.getElementById('searchInput').value;
-  renderTable();
+function deselect(i){delete selected[i];delete customQty[i];renderTable();}
+function filterEquipment(){searchText=document.getElementById('searchInput').value;renderTable();}
+function clearAll(){selected={};customQty={};renderTable();}
+
+function openModal(){
+  document.getElementById('modalBg').classList.add('show');
+  document.getElementById('clientName').focus();
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('show');}
+
+function doPrint(){
+  const client=document.getElementById('clientName').value||'';
+  const manager=document.getElementById('clientManager').value||'';
+  const project=document.getElementById('projectName').value||'장비 렌탈 견적';
+  const date=document.getElementById('shootDate').value||'';
+  const today=new Date();
+  const todayStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+  const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  const keys=Object.keys(selected).map(Number).filter(k=>selected[k]);
+
+  // 합계 계산
+  let total=0;
+  const rows=keys.map(k=>{
+    const item=data[k];const q=customQty[k]||1;const sub=item.price*q*days;total+=sub;
+    return `<tr><td>${item.model}</td><td>${item.desc}</td><td style="text-align:center">${q}${q>1?' ea':''}</td><td style="text-align:right">₩${item.price.toLocaleString()}</td><td style="text-align:right;color:#185fa5;font-weight:600">₩${sub.toLocaleString()}</td></tr>`;
+  }).join('');
+
+  const clientLine=`${client}${manager?' · '+manager:''}`;
+  const dateLine=date?`촬영 예정일: ${date}`:'';
+  const vat=Math.round(total*1.1);
+
+  const html=`
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#111;margin:0;padding:32px;font-size:13px}
+  .logo{font-size:26px;font-weight:700;letter-spacing:4px;color:#0a1628}
+  .info{font-size:11px;color:#666;margin-top:4px;line-height:1.8}
+  .divider{border:none;border-top:2px solid #0a1628;margin:16px 0}
+  .meta{margin-bottom:16px}
+  .meta-row{display:flex;gap:24px;font-size:12px;margin-bottom:4px}
+  .meta-label{color:#888;width:80px}
+  .meta-val{color:#111;font-weight:500}
+  h2{font-size:16px;font-weight:700;color:#0a1628;margin:0 0 16px}
+  table{width:100%;border-collapse:collapse;margin-bottom:20px}
+  th{background:#0a1628;color:#fff;padding:8px 10px;font-size:11px;font-weight:600;text-align:left}
+  td{padding:7px 10px;border-bottom:0.5px solid #e0e0e0;font-size:12px}
+  tr:nth-child(even) td{background:#f7f9fc}
+  .total-box{background:#f0f5ff;border:1px solid #b5d4f4;border-radius:8px;padding:14px 18px;text-align:right}
+  .total-label{font-size:12px;color:#666;margin-bottom:4px}
+  .total-price{font-size:22px;font-weight:700;color:#185fa5}
+  .vat{font-size:11px;color:#888;margin-top:4px}
+  .footer{margin-top:24px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:12px}
+</style></head><body>
+  <div class="logo">BAOSTARS</div>
+  <div class="info">부산광역시 사하구 하신번영로 312번길 63, 801호 | baostars@naver.com | 010-2871-1397<br>사업자등록번호: 760-01-01001</div>
+  <hr class="divider">
+  <div class="meta">
+    ${clientLine?`<div class="meta-row"><span class="meta-label">수신</span><span class="meta-val">${clientLine}</span></div>`:''}
+    ${dateLine?`<div class="meta-row"><span class="meta-label">촬영 예정일</span><span class="meta-val">${date}</span></div>`:''}
+    <div class="meta-row"><span class="meta-label">견적일</span><span class="meta-val">${todayStr}</span></div>
+    <div class="meta-row"><span class="meta-label">대여 일수</span><span class="meta-val">${days}일</span></div>
+    <div class="meta-row"><span class="meta-label">유효기간</span><span class="meta-val">견적일로부터 30일</span></div>
+  </div>
+  <h2>${project} — 장비 렌탈 견적서</h2>
+  <table>
+    <thead><tr><th>모델명</th><th>용도</th><th style="text-align:center">수량</th><th style="text-align:right">단가(1일)</th><th style="text-align:right">합계(${days}일)</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="total-box">
+    <div class="total-label">공급가액 (VAT 별도)</div>
+    <div class="total-price">₩${total.toLocaleString()}</div>
+    <div class="vat">VAT 10% 포함 시: ₩${vat.toLocaleString()}</div>
+  </div>
+  <div class="footer">※ 본 견적은 시장 참고가 기준이며 실제 협의에 따라 조정됩니다. | © BAOSTARS 이영봉 대표</div>
+</body></html>`;
+
+  closeModal();
+
+  // 새 탭으로 열고 인쇄 다이얼로그 (PDF 저장)
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  w.onload=function(){
+    w.focus();
+    w.print();
+  };
+  // onload 안 걸릴 경우 대비
+  setTimeout(()=>{try{w.focus();w.print();}catch(e){}},600);
 }
 
-function clearAll(){
-  selected={};
-  customQty={};
-  renderTable();
-}
+// 모달 외부 클릭 닫기
+document.getElementById('modalBg').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
 
 initCatFilter();
 renderTable();
