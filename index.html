@@ -148,17 +148,17 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
       <input type="text" id="projectName" placeholder="예) 2026 브랜드 홍보영상 촬영">
     </div>
     <div class="modal-field">
-      <label>대여 날짜 · 시간</label>
+      <label>대여 날짜 · 시간 <span id="daysDisplay" style="color:#4a9eff;font-weight:600;margin-left:8px"></span></label>
       <div style="display:flex;gap:6px">
-        <input type="date" id="rentDate" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
-        <input type="time" id="rentTime" value="09:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="date" id="rentDate" onchange="calcDays()" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="time" id="rentTime" onchange="calcDays()" value="09:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
       </div>
     </div>
     <div class="modal-field">
       <label>반납 날짜 · 시간</label>
       <div style="display:flex;gap:6px">
-        <input type="date" id="returnDate" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
-        <input type="time" id="returnTime" value="18:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="date" id="returnDate" onchange="calcDays()" style="flex:1;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 10px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
+        <input type="time" id="returnTime" onchange="calcDays()" value="18:00" style="width:90px;height:36px;border:1px solid #1e3a5f;border-radius:6px;padding:0 8px;background:#071020;color:#e0eaf5;font-family:inherit;font-size:13px">
       </div>
     </div>
     <div class="modal-actions">
@@ -383,7 +383,14 @@ function updateSummary(){
   const sv=document.getElementById('summaryVat');
   const cb=document.getElementById('countBadge');
   const pb=document.getElementById('pdfBtn');
-  const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  // 날짜 입력 있으면 그걸로, 없으면 수동 입력값 사용
+  let days;
+  if(rentDate && returnDate){
+    const ms=new Date(returnDate+' '+returnTime)-new Date(rentDate+' '+rentTime);
+    days=Math.max(1,Math.ceil(ms/(1000*60*60*24)));
+  } else {
+    days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  }
   const keys=Object.keys(selected).map(Number).filter(k=>selected[k]);
   cb.textContent=keys.length;
   pb.disabled=keys.length===0;
@@ -406,6 +413,22 @@ function deselect(i){delete selected[i];delete customQty[i];renderTable();}
 function filterEquipment(){searchText=document.getElementById('searchInput').value;renderTable();}
 function clearAll(){selected={};customQty={};renderTable();}
 
+function calcDays(){
+  const rd=document.getElementById('rentDate');
+  const rt=document.getElementById('rentTime');
+  const rod=document.getElementById('returnDate');
+  const rot=document.getElementById('returnTime');
+  if(!rd||!rod)return;
+  if(rd.value&&rod.value){
+    const ms=new Date(rod.value+' '+(rot.value||'18:00'))-new Date(rd.value+' '+(rt.value||'09:00'));
+    const d=Math.max(1,Math.ceil(ms/(1000*60*60*24)));
+    document.getElementById('daysInput').value=d;
+    updateSummary();
+    // 날짜 표시 업데이트
+    const di=document.getElementById('daysDisplay');
+    if(di)di.textContent=d+'일';
+  }
+}
 function openModal(){
   document.getElementById('modalBg').classList.add('show');
   document.getElementById('clientName').focus();
@@ -425,7 +448,14 @@ function doPrint(){
   const returnStr=fmtDate(returnDate,returnTime);
   const today=new Date();
   const todayStr=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
-  const days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  // 날짜 입력 있으면 그걸로, 없으면 수동 입력값 사용
+  let days;
+  if(rentDate && returnDate){
+    const ms=new Date(returnDate+' '+returnTime)-new Date(rentDate+' '+rentTime);
+    days=Math.max(1,Math.ceil(ms/(1000*60*60*24)));
+  } else {
+    days=Math.max(1,parseInt(document.getElementById('daysInput').value)||1);
+  }
   const keys=Object.keys(selected).map(Number).filter(k=>selected[k]);
 
   // 합계 계산
