@@ -112,6 +112,10 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-seri
       <input type="text" id="clientManager" placeholder="예) 김철수 대리">
     </div>
     <div class="modal-field">
+      <label>연락처</label>
+      <input type="text" id="clientContact" placeholder="예) 010-1234-5678 / email@company.com">
+    </div>
+    <div class="modal-field">
       <label>프로젝트명</label>
       <input type="text" id="projectName" placeholder="예) 2026 브랜드 홍보영상 촬영">
     </div>
@@ -406,6 +410,7 @@ function closeModal(){document.getElementById('modalBg').classList.remove('show'
 function doPrint(){
   const client=document.getElementById('clientName').value||'';
   const manager=document.getElementById('clientManager').value||'';
+  const contact=document.getElementById('clientContact').value||'';
   const project=document.getElementById('projectName').value||'장비 렌탈 견적';
   const rentDate=document.getElementById('rentDate').value||'';
   const rentTime=document.getElementById('rentTime').value||'';
@@ -457,6 +462,7 @@ function doPrint(){
   <hr class="divider">
   <div class="meta">
     ${clientLine?`<div class="meta-row"><span class="meta-label">수신</span><span class="meta-val">${clientLine}</span></div>`:''}
+    ${contact?`<div class="meta-row"><span class="meta-label">연락처</span><span class="meta-val">${contact}</span></div>`:''}
     ${rentStr?`<div class="meta-row"><span class="meta-label">대여 일시</span><span class="meta-val">${rentStr}</span></div>`:''}
     ${returnStr?`<div class="meta-row"><span class="meta-label">반납 일시</span><span class="meta-val">${returnStr}</span></div>`:''}
     <div class="meta-row"><span class="meta-label">견적일</span><span class="meta-val">${todayStr}</span></div>
