@@ -487,6 +487,28 @@ function doPrint(){
   w.document.close();
   w.onload=function(){w.focus();w.print();};
   setTimeout(()=>{try{w.focus();w.print();}catch(e){}},600);
+
+  // 견적 로그 전송 (구글 시트 기록 + 이메일 알림)
+  try{
+    const equipList=keys.map(k=>{
+      const item=data[k];const q=customQty[k]||1;
+      return item.model+(q>1?' ×'+q:'');
+    }).join(', ');
+    const periodStr=rentStr?(rentStr+' → '+(returnStr||'미정')):(days+'일');
+    fetch('https://script.google.com/macros/s/AKfycbwHExLcC-9-w3U_9-gVuaOrUbOKiGw9_rrdtboU1Fg6m27LJzWZoCb2zjeD5sJ-pt1B/exec',{
+      method:'POST',
+      body:JSON.stringify({
+        client:client,
+        manager:manager,
+        contact:contact,
+        project:project,
+        period:periodStr,
+        equipment:equipList,
+        total:'₩'+total.toLocaleString(),
+        vat:'₩'+vat.toLocaleString()
+      })
+    }).catch(()=>{});
+  }catch(e){}
 }
 
 document.getElementById('modalBg').addEventListener('click',function(e){
